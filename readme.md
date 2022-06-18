@@ -1,1 +1,1 @@
-#  Recs: share locations with tags and descriptions
+#  %loach: share simple image feeds
