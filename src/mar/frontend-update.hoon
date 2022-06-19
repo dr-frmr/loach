@@ -11,7 +11,6 @@
   ++  json
     ^-  ^json
     |^
-    ~&  >>  (process upd)
     (process upd)
     ++  process
       |=  upd=frontend-update

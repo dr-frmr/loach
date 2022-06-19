@@ -77,6 +77,7 @@
 ::
 ++  on-poke
   |=  [=mark =vase]
+  ~&  >>>  "poak recieved: {<vase>}"
   ^-  (quip card _this)
   ?.  ?=(%action mark)  !!
   =/  act  !<(action vase)

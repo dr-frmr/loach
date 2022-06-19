@@ -14,6 +14,7 @@ export interface FeedStore {
   mine: Map<string, Poast>,
   feeds: Map<string, Map<string, Poast>>,
   init: () => Promise<void>,
+  makePoast: (poast: Poast) => Promise<void>,
 }
 
 export function createSubscription(app: string, path: string, e: (data: any) => void): SubscriptionRequestInterface {
@@ -51,6 +52,8 @@ const useFeedStore = create<FeedStore>((set, get) => ({
 
     api.subscribe(createSubscription('loach', '/frontend', handleFrontendUpdate))
     console.log("hi")
+    let p: Poast = {pic: "jej2", label: null, loc: null}
+    get().makePoast(p)
   },
   letMeIn: async () => {
     await api.poke({
@@ -88,6 +91,7 @@ const useFeedStore = create<FeedStore>((set, get) => ({
     })
   },
   makePoast: async (poast: Poast) => {
+    console.log("making poast")
     await api.poke({
       app: 'loach',
       mark: 'action',
