@@ -1,3 +1,27 @@
 h2 {
   text-align: center;
 }
+#feed {
+  width: 540px;
+  margin: auto;
+  text-align: center;
+}
+button {
+  width: 120px;
+  height: 20px;
+}
+#poast {
+  width: 540px;
+  padding: 4px;
+  border: 1px solid black;
+  margin-bottom: 20px;
+}
+#poast img {
+  width: 540px;
+  height: 540px;
+}
+#to-follow, #follow-requests {
+  text-align: center;
+  padding: 4px;
+  border: 1px solid black;
+}

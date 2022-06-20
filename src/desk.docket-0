@@ -1,0 +1,10 @@
+:~
+  title+'loach'
+  info+'share simple image feeds'
+  color+0xdd.ddff
+  glob-ames+[~bus 0v0]
+  base+'loach'
+  version+[0 0 1]
+  license+'lol'
+  website+'https://bacrys.org'
+==

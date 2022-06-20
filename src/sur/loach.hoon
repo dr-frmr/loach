@@ -18,12 +18,12 @@
 ::
 +$  action
   $%  [%let-me-in ~]          ::  add to pending
-      [%allow f=(list @p)]    ::  remove from pending, add to trust
+      [%allow (list @p)]    ::  remove from pending, add to trust
       [%welcome ~]            ::  notification of trust
-      [%find-my f=(list @p)]  ::  add to frens
-      [%goodbye f=(list @p)]  ::  remove from frens
-      [%banish f=(list @p)]   ::  remove from frens, trust, pending
-      [%make-poast =poast]
+      [%find-my (list @p)]  ::  add to frens
+      [%goodbye (list @p)]  ::  remove from frens
+      [%banish (list @p)]   ::  remove from frens, trust, pending
+      [%make-poast poast]
   ==
 ::
 ::  subs

@@ -6,7 +6,9 @@
   ++  noun  action
   ++  json
     |=  jon=^json
+    |^
     ^-  action
+    ~&  >  jon
     %.  jon
     %-  of
     :~  [%let-me-in ul]          ::  add to pending
@@ -25,6 +27,7 @@
           [%label (mu so)]
           [%loc (mu (ot ~[[%lat (se %rs)] [%lon (se %rs)]]))]
       ==
+    --
   --
 ++  grow
   |%

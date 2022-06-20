@@ -88,41 +88,43 @@
   ::
       %allow
     ?>  =(src.bowl our.bowl)
-    =+  (silt f.act)
+    =+  (silt +.act)
     =.  trust    (~(uni in trust) -)
     =.  pending  (~(dif in pending) -)
-    [(snoc (welcome-cards f.act) (frontend-card state)) this]
+    [(snoc (welcome-cards +.act) (frontend-card state)) this]
   ::
       %welcome
     ?.  (~(has by frens) src.bowl)  `this
-    [(follow-cards src.bowl^~) this]
+    [(snoc (follow-cards src.bowl^~) (frontend-card state)) this]
   ::
       %find-my
     ?>  =(src.bowl our.bowl)
-    =+  (malt (turn f.act |=(p=@p [p *feed])))
+    =+  (malt (turn +.act |=(p=@p [p *feed])))
     =.  frens  (~(uni by frens) -)
-    [(follow-cards f.act) this]
+    [(snoc (follow-cards +.act) (frontend-card state)) this]
   ::
       %goodbye
     ?>  =(src.bowl our.bowl)
-    =+  (malt (turn f.act |=(p=@p [p ~])))
+    =+  (malt (turn +.act |=(p=@p [p ~])))
     =.  frens  (~(dif by frens) -)
-    [(leave-cards f.act) this]
+    [(snoc (leave-cards +.act) (frontend-card state)) this]
   ::
       %banish
     ?>  =(src.bowl our.bowl)
-    =+  (malt (turn f.act |=(p=@p [p ~])))
+    =+  (malt (turn +.act |=(p=@p [p ~])))
     =.  frens    (~(dif by frens) -)
-    =+  (silt f.act)
+    =+  (silt +.act)
     =.  trust    (~(dif in trust) -)
     =.  pending  (~(dif in pending) -)
-    [(kick-cards f.act) this]
+    [(snoc (kick-cards +.act) (frontend-card state)) this]
   ::
       %make-poast
     ?>  =(src.bowl our.bowl)
-    =.  mine  (~(put by mine) now.bowl poast.act)
+    =.  mine  (~(put by mine) now.bowl `poast`+.act)
     :_  this
-    [%give %fact ~[/feed] %update !>([%poast poast.act])]~
+    :~  (frontend-card state)
+        [%give %fact ~[/feed] %update !>([%poast `poast`+.act])]
+    ==
   ==
 ::
 ++  on-agent
@@ -144,11 +146,13 @@
   ?-    -.upd
       %poast
     ?~  feed=(~(get by frens) src.bowl)  `this
-    `this(frens (~(put by frens) src.bowl (~(put by u.feed) now.bowl poast.upd)))
+    =.  frens  (~(put by frens) src.bowl (~(put by u.feed) now.bowl poast.upd))
+    [(frontend-card state)^~ this]
   ::
       %all-poasts
     ?~  feed=(~(get by frens) src.bowl)  `this
-    `this(frens (~(put by frens) src.bowl feed.upd))
+    =.  frens (~(put by frens) src.bowl feed.upd)
+    [(frontend-card state)^~ this]
   ==
 ::
 ++  on-arvo  on-arvo:def

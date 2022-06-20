@@ -2,19 +2,25 @@ import create from "zustand"
 import { SubscriptionRequestInterface } from "@urbit/http-api";
 import api from "../api";
 import { Poast } from "../types/Poast";
+import { FeedPoast } from "../types/FeedPoast"
 
 interface FrontendUpdate {
-  mine: Map<string, Poast>,
-  frens: Map<string, Map<string, Poast>>,
+  mine: {[key: string]: Poast},
+  frens: {[key: string]: {[key: string]: Poast}},
   trust: string[],
   pending: string[],
 }
 
 export interface FeedStore {
-  mine: Map<string, Poast>,
-  feeds: Map<string, Map<string, Poast>>,
+  //  mine: {[key: string]: Poast},
+  //  frens: {[key: string]: {[key: string]: Poast}},
+  feed: Array<FeedPoast>,
+  trust: string[],
+  pending: string[],
   init: () => Promise<void>,
   makePoast: (poast: Poast) => Promise<void>,
+  allow: (frens: string[]) => Promise<void>,
+  findMy: (frens: string[]) => Promise<void>,
 }
 
 export function createSubscription(app: string, path: string, e: (data: any) => void): SubscriptionRequestInterface {
@@ -42,25 +48,34 @@ const parseDate = (eA: string) => eA
   .replace(/\.\..*$/, 'Z')
 
 const useFeedStore = create<FeedStore>((set, get) => ({
-  mine: new Map<string, Poast>,
-  feeds: new Map<string, Map<string, Poast>>,
+  feed: [],
+  trust: [],
+  pending: [],
   init: async () => {
-    const handleFrontendUpdate = (data: any) => {
-      console.log("YO!", data)
-      set({ })
+    const handleFrontendUpdate = (data: FrontendUpdate) => {
+      const trust: string[] = data.trust
+      const pending: string[] = data.pending
+      //  blend all feeds into one
+      const feed: FeedPoast[] = Object.entries(data.mine).map((p: [string, Poast]) => {
+        console.log("date: ", p[0])
+        console.log("parsed: ", parseDate(p[0]))
+        return {poast: p[1], author: window.ship, date: new Date(parseDate(p[0]))}
+      })
+      Object.entries(data.frens).forEach((v: [string, {[key: string]: Poast}]) => {
+        Object.entries(v[1]).forEach((p: [string, Poast]) => {
+          feed.push({poast: p[1], author: v[0], date: new Date(parseDate(p[0]))})
+        })
+      })
+      feed.sort((a: FeedPoast, b: FeedPoast) => {
+        if (a.date < b.date) {
+          return 1
+        } if (a.date === b.date) {
+          return 0
+        } return -1
+      })
+      set({ feed, trust, pending })
     }
-
     api.subscribe(createSubscription('loach', '/frontend', handleFrontendUpdate))
-    console.log("hi")
-    let p: Poast = {pic: "jej2", label: null, loc: null}
-    get().makePoast(p)
-  },
-  letMeIn: async () => {
-    await api.poke({
-      app: 'loach',
-      mark: 'action',
-      json: { 'let-me-in': null }
-    })
   },
   allow: async (frens: string[]) => {
     await api.poke({
@@ -91,11 +106,11 @@ const useFeedStore = create<FeedStore>((set, get) => ({
     })
   },
   makePoast: async (poast: Poast) => {
-    console.log("making poast")
+    console.log("making poast: ", {'make-poast': poast})
     await api.poke({
       app: 'loach',
       mark: 'action',
-      json: { 'make-poast': JSON.stringify(poast) }
+      json: {'make-poast': poast}
     })
   },
 }));
